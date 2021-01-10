@@ -12,17 +12,6 @@
     apt:
       name: postgresql
 
-  - name: install python packages
-    become: yes
-    pip:
-      name:
-        - xlrd
-        - num2words
-        - xlwt
-        - phonenumbers
-        - qrcode
-
-      executable: pip3
 
   - name: Install packages
     become: yes
@@ -39,6 +28,22 @@
     become: yes
     shell: wget -O - https://nightly.odoo.com/odoo.key | apt-key add - ; echo "deb http://nightly.odoo.com/11.0/nightly/deb/ ./" >> /etc/apt/sources.list ; apt-get update && apt-get install odoo -y
 
+  - name: Start Odoo
+    become: yes
+    service:
+      name: odoo
+      state: started
+
+  - name: install python packages
+    become: yes
+    pip:
+      name:
+        - xlrd
+        - num2words
+        - xlwt
+        - phonenumbers
+        - qrcode
+      executable: pip3
 
   - name: Create custom addons dir
     become: yes
@@ -55,4 +60,3 @@
     service:
       name: odoo
       state: restarted
-
