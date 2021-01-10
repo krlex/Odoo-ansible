@@ -1,0 +1,76 @@
+---
+
+- hosts: all
+  tasks:
+  - name: Set timezone to Europe/Amsterdam
+    become: yes
+    timezone:
+      name: Europe/Amsterdam
+
+  - name: Install postgres
+    become: yes
+    apt:
+      name: postgresql
+
+  - name: Install packages
+    become: yes
+    apt:
+      name:
+        - python3
+        - python3-pip
+        - wget
+        - bzr
+        - git
+        - gdebi-core
+
+  - name: Download wkhtmltopdf
+    become: yes
+    shell: wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb -P /tmp
+
+  - name: Install wkhtmltopdf
+    become: yes
+    shell: dpkg -i /tmp/wkhtmltox_0.12.5-1.bionic_amd64.deb
+
+  - name: Link wkhtmltopdf
+    become: yes
+    shell: ln -s /usr/local/bin/wkhtmltopdf /usr/bin ; sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
+
+  - name: Link wkhtmltoimage
+    become: yes
+    shell: ln -s /usr/local/bin/wkhtmltoimage /usr/bin
+
+  - name: Remove wkhtmltopdf
+    become: yes
+    shell: rm -f /tmp/wkhtmltox_0.12.5-1.bionic_amd64.deb
+
+  - name: install python packages
+    become: yes
+    pip:
+      name:
+        - xlrd
+        - num2words
+        - xlwt
+        - phonenumbers
+        - qrcode
+      executable: pip3
+
+  - name: Install Odoo
+    become: yes
+    shell: wget http://nightly.odoo.com/14.0/nightly/deb/odoo_14.0.latest_all.deb -P /tmp ; sudo dpkg -i /tmp/odoo_14.0.latest_all.deb ; sudo apt-get install -f -y ; sudo rm -f /tmp/odoo_14.0.latest_all.deb
+
+  - name: Create custom addons dir
+    become: yes
+    shell: mkdir -p /opt/odoo/addons
+
+  - name: Config Odoo
+    become: yes
+    template:
+      src: odoo.conf
+      dest: /etc/odoo/
+
+  - name: Restart Odoo
+    become: yes
+    service:
+      name: odoo
+      state: restarted
+
