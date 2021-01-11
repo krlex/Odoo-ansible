@@ -1,0 +1,44 @@
+---
+
+- name: Download and Apply Odoo Key
+  become: yes
+  shell: wget -O - https://nightly.odoo.com/odoo.key | apt-key add -
+
+- name: Add Odoo specified repository into sources list
+  become: yes
+  apt_repository:
+    repo: deb http://nightly.odoo.com/11.0/nightly/deb/ ./
+    state: present
+
+- name: Update source list
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: install Odoo
+  become: yes
+  apt:
+    name: odoo
+    state: latest
+
+- name: Start Odoo
+  become: yes
+  service:
+    name: odoo
+    state: started
+
+- name: Create custom addons dir
+  become: yes
+  shell: mkdir -p /opt/odoo/addons
+
+- name: Config Odoo
+  become: yes
+  template:
+    src: odoo.conf
+    dest: /etc/odoo/
+
+- name: Restart Odoo
+  become: yes
+  service:
+    name: odoo
+    state: restarted

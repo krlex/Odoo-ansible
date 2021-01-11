@@ -1,0 +1,12 @@
+---
+
+- name: Install postgresql
+  become: yes
+  apt:
+    name: postgresql
+
+- name: Start postgresql
+  become: yes
+  service:
+    name: postgresql
+    state: started

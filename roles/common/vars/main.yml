@@ -1,0 +1,17 @@
+---
+common_packages:
+  - name: python3
+  - name: python3-pip
+  - name: python-apt
+  - name: wget
+  - name: bzr
+  - name: git
+  - name: gdebi-core
+  - name: vim
+
+python_packages:
+  - name: xlrd
+  - name: num2words
+  - name: xlwt
+  - name: phonenumbers
+  - name: qrcode

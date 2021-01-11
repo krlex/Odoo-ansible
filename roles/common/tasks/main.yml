@@ -1,0 +1,20 @@
+---
+
+- name: Set timezone to Europe/Amsterdam
+  become: yes
+  timezone:
+    name: Europe/Amsterdam
+
+- name: Install common packages
+  become: yes
+  with_items: "{{ common_packages }}"
+  package:
+    pkg: "{{ item.name }}"
+    state: latest
+
+- name: install python packages
+  become: yes
+  with_items: "{{ python_packages }}"
+  pip:
+    name: "{{ item.name }}"
+    executable: pip3
